@@ -1,0 +1,55 @@
+im=imread('egg.jpg');
+im = rgb2gray(im);
+
+    intensity = double(rgb2gray(im));
+    imEdge = edge(intensity, 'canny');
+    
+    if nargin < 4
+        if usegradient
+            THRESHOLD = 4; 
+            FRACTION = 0.24;
+        else
+            THRESHOLD = 12;
+            FRACTION = 1/3;
+        end
+    end
+    MIN_RADIUS = 2;
+    
+   
+        %TODO detect gradient
+        xGradient = imfilter(intensity, [-1, 1] );
+        yGradient = imfilter(intensity, [-1, 1]');
+        gradientDirections = atan2(yGradient, xGradient);
+        
+        if fixRadius ~= 0
+            voteMatrix = houghVoteMatrix(imEdge, fixRadius, gradientDirections);
+            [centers, radius] = localMax(voteMatrix, THRESHOLD, FRACTION, imEdge, fixRadius);
+        else
+            [row, col] = size(imEdge);
+            MAX_RADIUS = floor(min(row, col) / 2);
+            voteMatrix = zeros(row, col, MAX_RADIUS);
+            for r = MIN_RADIUS: MAX_RADIUS
+                voteMatrix(:,:,r) = houghVoteMatrix(imEdge, r, gradientDirections);
+            end
+            [centers, radius] = localMax(voteMatrix, THRESHOLD, FRACTION, imEdge);
+        end
+    
+   
+    
+ 
+    
+Hnorm = (Acc ./ max(max(Acc)));
+[mx,my] = find(Hnorm > .90); %MY THRESHOLD
+
+centers = horzcat(my,mx);
+% centers
+
+    
+
+%centers = houghpeaks(Acc,10);
+    
+%     centers = centers.*5;
+    figure; 
+    imshow(im); 
+    viscircles(centers, radius * ones(size(centers, 1), 1));
+
