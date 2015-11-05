@@ -4,7 +4,7 @@
 % the descriptors. 
 % Two distinct words choosen to show image patches(at least 25 patches).
 
-% % please change these to your directory
+% please change these to your directory
 addpath(genpath('../'));
 
 framesdir = '../frames/';
@@ -55,6 +55,8 @@ k = 1500;
 
 [membership, means] = kmeansML(k, SampleDes');
 
+% load('clust.mat')
+
 % create two distinctive sample
 while 1
     sampleIdx = randperm(k,2);
@@ -92,3 +94,5 @@ end
 
 % save all to file
 save('membership','means','sampleIdx');
+save('clust.mat');
+save('imgAcc','-v7.3');
